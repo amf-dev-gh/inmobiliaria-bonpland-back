@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.andres.inmobiliariaBonpland.model.Inmueble;
-import com.andres.inmobiliariaBonpland.utils.FiltroInmueble;
+import com.andres.inmobiliariaBonpland.model.dto.FiltroInmueble;
 
 public interface InmuebleService {
 

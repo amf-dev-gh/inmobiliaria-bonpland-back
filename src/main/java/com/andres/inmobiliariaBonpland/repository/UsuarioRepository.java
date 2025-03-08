@@ -8,6 +8,6 @@ import com.andres.inmobiliariaBonpland.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
 	
-	Optional<Usuario> findByUsername(String nombreDeUsuario);
+	Optional<Usuario> findByUsername(String username);
 
 }

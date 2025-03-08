@@ -2,26 +2,19 @@ package com.andres.inmobiliariaBonpland;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import com.andres.inmobiliariaBonpland.model.Inmueble;
-import com.andres.inmobiliariaBonpland.model.Usuario;
+import com.andres.inmobiliariaBonpland.model.dto.RegistroUsuarioDto;
 import com.andres.inmobiliariaBonpland.service.InmuebleService;
-import com.andres.inmobiliariaBonpland.service.UsuarioService;
+import com.andres.inmobiliariaBonpland.service.implement.AuthenticationService;
 
 import jakarta.transaction.Transactional;
 
 @SpringBootApplication
 public class InmobiliariaBonplandApplication {
-
-	@Autowired
-	InmuebleService inmuebleService;
-	
-	@Autowired
-	UsuarioService usuarioService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(InmobiliariaBonplandApplication.class, args);
@@ -30,8 +23,9 @@ public class InmobiliariaBonplandApplication {
 	// Inserta inmuebles al iniciar la API
 	@Bean
 	@Transactional
-	CommandLineRunner initData(InmuebleService inmuebleService, UsuarioService usuarioService) {
+	CommandLineRunner initData(InmuebleService inmuebleService, AuthenticationService authService) {
 		return args -> {
+			//Crear inmuebles para que la lista no este vacía
 			List<Inmueble> inmuebles = new ArrayList<>();
 			inmuebles.add(new Inmueble("Argentina", "Cordoba", "Las Palmas", 150, 4, "Alquiler", 900, "Disponible",
 					"/assets/foto1.jpeg", "Departamento espacioso a estrenar"));
@@ -61,9 +55,8 @@ public class InmobiliariaBonplandApplication {
 			for (Inmueble i : inmuebles) {
 				inmuebleService.save(i);
 			}
-			
-			usuarioService.guardar(new Usuario(null, "Andres Fernandez", "andres", "12345norah", "ADMIN", "andres@mail.com", true));
-			usuarioService.guardar(new Usuario(null, "Pepito Perez", "pepito", "12345", "USUARIO", "pepito@mail.com", true));
+			//Crea el usuario Admin
+			authService.registrar(new RegistroUsuarioDto("admin","12345","Administrador","admin@mail.com","ADMIN"));
 		};
 	}
 

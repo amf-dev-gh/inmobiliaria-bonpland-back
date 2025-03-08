@@ -8,10 +8,15 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.andres.inmobiliariaBonpland.model.Inmueble;
+import com.andres.inmobiliariaBonpland.model.dto.FiltroInmueble;
 import com.andres.inmobiliariaBonpland.repository.InmuebleRepository;
 import com.andres.inmobiliariaBonpland.service.InmuebleService;
-import com.andres.inmobiliariaBonpland.utils.FiltroInmueble;
 
+/*
+ * Servicio encargado de la creación, modificación, edición, eliminación y persistencia de inmuebles en la BBDD
+ * 
+ * @author Andres Mariano Fernández
+ */
 @Service
 public class InmuebleServiceImpl implements InmuebleService {
 
@@ -22,19 +27,17 @@ public class InmuebleServiceImpl implements InmuebleService {
 	public List<Inmueble> getAll() {
 		return inmuebleRepo.findAll();
 	}
-	
+
 	public Inmueble save(Inmueble inmueble) {
 		LocalDate fechaActual = LocalDate.now();
-		inmueble.setFechaModificacion(fechaActual);	
-		
-		if(inmueble.getId() == null || inmueble.getId().isEmpty()) {
-			inmueble.setId(UUID.randomUUID().toString().replace("-", ""));
+		inmueble.setFechaModificacion(fechaActual);
+		if (inmueble.getId() == null || inmueble.getId().isEmpty()) {
+			inmueble.setId(generaID());
 			inmueble.setFechaCreacion(fechaActual);
-		}else {
+		} else {
 			Optional<Inmueble> opt = findById(inmueble.getId());
 			inmueble.setFechaCreacion(opt.get().getFechaCreacion());
 		}
-		
 		return inmuebleRepo.save(inmueble);
 	}
 
@@ -59,6 +62,14 @@ public class InmuebleServiceImpl implements InmuebleService {
 	@Override
 	public Optional<Inmueble> findById(String id) {
 		return inmuebleRepo.findById(id);
+	}
+
+	private String generaID() {
+		String id = "";
+		do {
+			id = UUID.randomUUID().toString().replace("-", "").substring(0, 15);
+		} while (findById(id).isPresent());
+		return id;
 	}
 
 }
